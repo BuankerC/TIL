@@ -112,5 +112,9 @@ hidden: 숨김
 
 1.4 display	
 
+1.5 position
+
+1.6 Text
+
 
 
