@@ -1,0 +1,89 @@
+## swea 5356. 의석이의 세로로 말해요 D3
+```python
+for T in range(int(input())):
+    L = [list(input()) for _ in range(5)]
+    a = max(map(len, L))
+    for r in L:
+        while len(r) < a:
+            r.append('')
+    re = ''.join([L[x][y] for y in range(a) for x in range(len(L))])
+    print("#{} {}".format(T+1, re))
+```
+
+
+
+## swea 4615. 재미있는 오셀로 게임 D3
+
+```python
+'''
+swea 4615 재미있는 오셀로 게임
+
+'''
+def is_not_limit(a, b, n):
+    if a >= 0 and a < n and b >= 0 and b < n:
+        return True
+    else:
+        return False
+
+
+T = int(input())
+for t in range(1, T+1):
+    N, M = map(int, input().split())
+    data = [[0] * N for _ in range(N)]
+    data[N//2 - 1][N//2] = 1
+    data[N//2][N//2 - 1] = 1
+    data[N//2 - 1][N//2 - 1] = 2
+    data[N//2][N//2] = 2
+
+    dx = [-1, 0, 1, 1, 1, 0, -1, -1]
+    dy = [-1, -1, -1, 0, 1, 1, 1, 0]
+
+    for _ in range(M):
+        a, b, stone = map(int, input().split())
+        x = a - 1
+        y = b - 1
+        data[x][y] = stone
+        for i in range(8):
+            count = 0
+            next_x = x + dx[i]
+            next_y = y + dy[i]
+            while is_not_limit(next_x, next_y, N) and stone != data[next_x][next_y] and data[next_x][next_y] != 0:
+                count += 1
+                next_x = next_x + dx[i]
+                next_y = next_y + dy[i]
+
+            if is_not_limit(next_x, next_y, N) and data[next_x][next_y] == stone:
+                next_x = x + dx[i]
+                next_y = y + dy[i]
+                for f in range(count):
+                    data[next_x][next_y] = stone
+                    next_x = next_x + dx[i]
+                    next_y = next_y + dy[i]
+
+    count1 = 0
+    count2 = 0
+    for i in range(N):
+        for j in range(N):
+            if data[i][j] == 1:
+                count1 += 1
+            elif data[i][j] == 2:
+                count2 += 1
+    print('#{} {} {}'.format(t, count1, count2))
+```
+
+**슈더 코드**
+
+```python
+12222210000
+21111120000
+
+1000001
+
+12222222222
+
+12222220001
+
+```
+
+
+
