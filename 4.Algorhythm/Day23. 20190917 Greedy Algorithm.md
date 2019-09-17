@@ -180,3 +180,226 @@ Power_of_2( k )
 
 
 
+### 순열(Permutation)
+
+**서로 다른 것들 중 몇 개를 뽑아서 한 줄로 나열하는 것**
+
+**서로 다른 n개 중 r개를 택하는 순열은 아래와 같이 표현한다.**
+
+nPr
+
+**그리고 nPr은 다음과 같은 식이 성립한다.**
+
+nPr = n * (n-1) * (n-2)* ... *(n-r+1)
+
+**nPn = n!이라고 표기하면 Factorial이라 부른다.**
+
+n! = n * (n-1) * (n-2)* ... * 2 * 1 
+
+
+
+**다수의 알고리즘 문제들은 순서화된 요소들의 집합에서 최선의 방법을 찾는 것과 관련 있다.**
+
+- 예 > TSP
+
+**N개의 요소들에 대해서 n!개의 순열들이 존재한다.**
+
+- 12! = 479,001,600
+- n > 12인 경우, 시간 복잡도 폭발적으로 증가
+
+
+
+#### 단순하게 순열을 생성하는 방법
+
+- 예) {1, 2, 3}을 포함하는 모든 순열을 생성하는 함수
+  - 동일한 숫자가 포함되지 않았을 때, 각 자리 수 별로 loop을 이용해 아래와 같이 구현할 수 있다.
+
+```python
+for i1 in 1 -> 3
+	for i2 in 1 -> 3
+    	if i2 != i1
+        	for i3 in 1 -> 3
+            	if i3 != i1 and i3 != i2
+                	print(i1, i2, i3)
+```
+
+
+
+### 순열 생성 방법
+
+#### 사전적 순서(Lexicographic-Order)
+
+- {1, 2, 3}, n = 3 인 경우 다음과 같이 생성된다.
+- [1 2 3] [1 3 2] [2 1 3] [2 3 1] [3 1 2] [3 2 1]
+
+#### 최소 변경을 통한 방법(Minimum-exchange requirement)
+
+- 각각의 순열들은 이전의 상태에서 단지 두 개의 요소들 교환을 통해 생성
+- [**1** 2 **3**] [**3 2** 1] [2 **3 1**] [**2** 1 **3**] [**3 1** 2] [1 3 2]
+
+#### 최소한의 변경(Minimum-change requirement)을 통해 다음 순열을 생성하는 방법
+
+- 1950년대의 교회의 종소리 패턴하고 유사
+- Johnson-Trotter 알고리즘
+
+
+
+#### 재귀 호출을 통한 순열 생성
+
+```c
+// arr[] : 데이터가 저장된 배열
+// swap(i, j): arr[i] <-- 교환 --> arr[j]
+// n: 원소의 개수, k: 현재까지 교환된 원소의 개수
+perm(n, k)
+	if k == n
+    	print array // 원하는 작업 수행
+    else
+    	for i in k -> n-1
+        	swap(k, i);
+            perm(n, k + 1);
+            swap(k, i);
+```
+
+
+
+### 부분집합
+
+#### 집합에 포함된 원소들을 선택하는 것이다.
+
+#### 다수의 중요 알고리즘들이 원소들의 그룹에서 최적의 부분집합을 찾는 것이다.
+
+- 예 > 배낭 짐싸기(knapsack)
+
+#### N개의 원소를 포함한 집합
+
+- 자기 자신과 공집합 포함한 모든 부분집합(power set)의 개수는 2**n개
+- 원소의 수가 증가하면 부분집합의 개수는 지수적으로 증가
+
+
+
+#### 단순하게 모든 부분집합 생성하는 방법
+
+- 4개 원소를 포함한 집합에 대한 power set 구하기
+
+```c
+for i1 in 0 -> 1
+    bit[0] <- i1              // 0번째 원소
+    for i2 in 0 -> 1
+        bit[1] <- i2          // 1번째 원소
+        for i2 in 0 -> 1
+            bit[2] <- i3      // 2번째 원소
+            for i2 in 0 -> 1
+                bit[3] <- i4  // 3번째 원소
+                print_array() // 생성된 부분집합 출력
+```
+
+
+
+#### 바이너리 카운팅을 통한 사전적 순서(Lexicographical Order)
+
+- 부분집합을 생성하기 위한 가장 자연스러운 방법이다.
+- 바이너리 카운팅(Binary Counting)은 사전적 순서로 생성하기 위한 가장 간단한 방법이다.
+
+#### 바이너리 카운팅(Binary Counting)
+
+- 원소 수에 해당하는 N개의 비트열을 이용한다.
+- n번째 비트값이 1이면, n번째 원소가 포함되었음을 의미한다.
+
+#### 바이너리 카운팅을 통한 부분집합 생성 코드 예
+
+```python
+arr = [3, 6, 7, 1, 5, 4]
+n = len(arr)
+
+for i in range(0, (1 << n)):
+    # 1 << n : 부분집합의 개수
+    for j in range(0, n):
+        #원소의 수 만큼 비트를 비교함
+        if i & (i << j):
+                # i의 j번째 비트가 1이 j번째 원소 출력
+            print('%d, ' % arr[j], end='')
+    print()
+```
+
+
+
+### swea 5188. [파이썬 S/W 문제해결 구현] 2일차 - 최소합 D3
+
+```python
+def Safe(y, x):
+    return 0 <= y < N and 0 <= x < N
+
+def DFS(y, x):
+    global sub_result, result
+
+    if result < sub_result:
+        return
+
+    if y == N - 1 and x == N - 1:
+        result = sub_result
+        return
+
+    for dir in range(2):
+        NewY = y + dy[dir]
+        NewX = x + dx[dir]
+        if Safe(NewY, NewX) and (NewY, NewX) not in visited:
+            visited.append((NewY, NewX))
+            sub_result += Data[NewY][NewX]
+            DFS(NewY, NewX)
+            visited.remove((NewY, NewX))
+            sub_result -= Data[NewY][NewX]
+
+T = int(input())
+for tc in range(1, T + 1):
+    N = int(input())
+    Data = [list(map(int, input().split())) for _ in range(N)]
+
+    visited = []
+
+    # 오른쪽 아래
+    dy = [0, 1]
+    dx = [1, 0]
+
+    sub_result, result = Data[0][0], 987654321
+    DFS(0, 0)
+    print('#{} {}'.format(tc, result))
+```
+
+
+
+### swea 5209. [파이썬 S/W 문제해결 구현] 5일차 - 최소 생산 비용 D3
+
+```python
+def solve(i, cnt):
+    global minsum
+    if i == N:
+        if cnt < minsum:
+            minsum = cnt
+        return
+    for j in range(N):
+        if not check[j] and cnt + mat[i][j] <= minsum:
+            check[j] = 1
+            solve(i+1, cnt + mat[i][j])
+            check[j] = 0
+
+tc = int(input())
+for t in range(1, tc+1):
+    N = int(input())
+    mat = [0] * N
+    for i in range(N):
+        mat[i] = list(map(int, input().split()))
+    check = [0] * N
+    minsum = 1500
+    solve(0, 0)
+    print('#%d %d' % (t, minsum))
+```
+
+
+
+
+
+다시 올것 같던 나 혼자만의 오랜 기대였던 그 날들이
+
+내겐 필요했어요 많은 걸 깨닫게 했던
+
+그 이별을 단 한 번 더 오늘 할게요
