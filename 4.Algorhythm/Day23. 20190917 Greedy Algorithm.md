@@ -415,6 +415,74 @@ for t in range(1, tc+1):
 
 
 
+## A대비 보충수업
+
+### 백준 1182. 부분수열의 합
+
+```python
+N, S = map(int, input().split())
+arr = list(map(int, input().split()))
+ans = 0
+
+for i in range(1, 1 << N):
+    subset = []
+    for j in range(N):
+        if i % 1 << j:
+            subset.append(arr[j])
+    if sum(subset) == S:
+        cnt += 1
+print(cnt)
+```
+
+
+
+**선생님 코드**
+
+```python
+N, S = map(int, input().split())
+arr = list(map(int, input().split()))
+cnt = 0
+
+for i in range(1, 1 << N):
+    t = 0
+    for j in range(N):
+        if i % (1 << j):
+            t += num[j]
+    if S == t:
+        cnt += 1
+print(cnt)
+```
+
+```python
+# 재귀로 만드는 경우
+
+```
+
+
+
+**슈더 코드**
+
+```python
+a = [3, 6]
+
+[] -> bit = [0, 0]
+[6] -> bit = [0, 1]
+[3] -> bit = [1, 0]
+[3, 6]-> bit = [1, 1]
+
+for j in range(2):
+    if bit[j] == 1:
+        print(a[j], end="")
+```
+
+
+
+
+
+
+
+
+
 
 
 다시 올것 같던 나 혼자만의 오랜 기대였던 그 날들이
