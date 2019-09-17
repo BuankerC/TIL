@@ -365,6 +365,25 @@ for tc in range(1, T + 1):
     print('#{} {}'.format(tc, result))
 ```
 
+슈더 코드
+
+```python
+f(i, j, s) # 방문하는 칸의 좌표 i, j 이전에 지나온 칸의 합 s
+	if i == N-1 and j == N - 1:
+        
+    else:
+        f(i+1, j, s+arr[i][j])
+        
+        f(i, j+1, s+arr[i][j])
+        
+# i, j 칸까지 도착하는 최소비용의 합
+for i : j -> N
+    for j : 1 - > N
+        d[i][j] = min(d[i-1][j], d[i][j-1]) + arr[i][j]
+```
+
+
+
 
 
 ### swea 5209. [파이썬 S/W 문제해결 구현] 5일차 - 최소 생산 비용 D3
