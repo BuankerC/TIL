@@ -397,23 +397,87 @@ partition(A[], p, r)
 
 
 
+## 이진 검색(Binary Search)
+
+#### 자료의 가운데에 있는 항목의 키 값과 비교하여 다음 검색의 위치를 결정하고 검색을 계속 진행하는 방법
+
+- 목적 키를 찾을 때까지 이진 검색을 순환적으로 반복 수행함으로써 검색 범위를 반으로 줄여가면서 보다 빠르게 검색을 수행함
+
+#### 이진 검색을 하기 위해서는 자료가 정렬된 상태여야 한다.
+
+#### 검색과정
+
+1. 자료의 중앙에 있는 원소를 고른다.
+2. 중앙 원소의 값과 찾고자 하는 목표 값을 비교한다.
+3. 목표 값이 중앙 원소의 값보다 작으면 자료의 왼쪽 반에 대해서 새로 검색을 수행하고, 크다면 자료의 오른쪽 반에 대해서 새로 검색을 수행한다.
+4. 찾고자 하는 값을 찾을 때까지 1~3의 과정을 반복한다.
+
+#### 알고리즘 : 반복구조
+
+```python
+binarySearch(n, s[], k)
+low -> 0
+high <- n - 1
+
+while low <= high and location = 0
+	mid <- low + (high - low) / 2
+    
+    if S[mid] == key
+    	return mid
+    elif S[mid] > key
+    	high <- mid - 1
+    else
+    	low <- mid + 1
+return -1
+```
 
 
 
+### 분할 정복의 활용
+
+#### 병합 정렬은 외부 정렬의 기본이 되는 정렬 알고리즘이다. 또한, 멀티코어 CPU나 다수의 프로세서에서 정렬 알고리즘을 병렬화하기 위해 병합 정렬 알고리즘이 활용된다.
 
 
 
+### swea 5201. [파이썬 S/W 문제해결 구현] 3일차 - 컨테이너 운반 D3
 
+```python
+T = int(input())
+for tc in range(1, T + 1):
+    N, M = map(int, input().split())
+    Mat_Weight = list(map(int, input().split()))
+    Truck_Weight = list(map(int, input().split()))
+    visited = [0] * M
 
+    ans = 0
+    for i in range(M):
+        result = 0
+        for unit_Weight in Mat_Weight:
+            if Truck_Weight[i] >= unit_Weight and unit_Weight >= result:
+                result = unit_Weight
+        if result != 0:
+            Mat_Weight.remove(result)
+        ans += result
+    print('#{} {}'.format(tc, ans))
+```
 
+슈더코드
 
+```python
+'''
+1 5 3 -> 컨테이너 무게
+8 3 - > 트럭 용량
 
+각각 정렬한다.
 
+가장 무거운 컨테이너와 가장 큰 트럭을 
+가리키는 인덱스를 준비한다.
 
-
-
-
-
+인덱스가 가리키는 컨테이너를 인덱스 가리키는
+트럭에 실을 수 있으면 두 인덱스를 다음으로 변경.
+실을 수 없다면 컨테이너 인덱스만 다음으로 변경.
+'''
+```
 
 
 
