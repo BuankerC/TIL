@@ -302,6 +302,37 @@ for t in range(int(input())):
 
 
 
+선생님 코드
+
+```python
+def f(i, N):
+    global cnt
+    if i==N:
+        cnt += 1
+    else:
+        for j in range(N):
+            if col[j]==0 and diag1[i+N-1-j]==0 and diag2[i+j]==0:
+                col[j] = 1
+                diag1[i + N - 1 - j] =1
+                diag2[i + j] =1
+                f(i+1, N)
+                col[j] = 0
+                diag1[i + N - 1 - j] = 0
+                diag2[i + j] = 0
+
+T = int(input())
+for tc in range(1, T+1):
+    N = int(input())
+    cnt = 0
+    col = [0]*N
+    diag1 = [0]*2*N
+    diag2 = [0]*2*N
+    f(0, N)
+    print('#{} {}'.format(tc, cnt))
+```
+
+
+
 슈더 코드
 
 ```python
@@ -322,7 +353,251 @@ f(i, N)
             right[i+j] = 0
             left[i-j+N-1] = 0
             #board[i][j] = 0
+f(0, N)
 ```
+
+
+
+### 백준 13460 구슬 탈출 2
+
+```python
+from sys import stdin
+from collections import deque
+input = stdin.readline
+
+n, m = map(int, input().split())
+a = [list(input().strip()) for _ in range(n)]
+check = [[[[False]*m for _ in range(n)] for _ in range(m)] for _ in range(n)]
+dx, dy = (-1, 0, 1, 0), (0, 1, 0, -1)
+q = deque()
+
+def init():
+    _rx, _ry, _bx, _by = [0]*4
+    for i in range(n):
+        for j in range(m):
+            if a[i][j] == 'R':
+                _rx, _ry = i, j
+            elif a[i][j] == 'B':
+                _bx, _by = i, j
+    q.append((_rx, _ry, _bx, _by, 0))
+    check[_rx][_ry][_bx][_by] = True
+
+def move(_x, _y, _dx, _dy, _c):
+    while a[_x+_dx][_y+_dy] != '#' and a[_x][_y] != 'O':
+        _x += _dx
+        _y += _dy
+        _c += 1
+    return _x, _y, _c
+
+def bfs():
+    while q:
+        rx, ry, bx, by, d = q.popleft()
+        if d >= 10:
+            break
+        for i in range(4):
+            nrx, nry, rc = move(rx, ry, dx[i], dy[i], 0)
+            nbx, nby, bc = move(bx, by, dx[i], dy[i], 0)
+            if a[nbx][nby] == 'O':
+                continue
+            if a[nrx][nry] == 'O':
+                print(d+1)
+                return
+            if nrx == nbx and nry == nby:
+                if rc > bc:
+                    nrx, nry = nrx-dx[i], nry-dy[i]
+                else:
+                    nbx, nby = nbx-dx[i], nby-dy[i]
+            if not check[nrx][nry][nbx][nby]:
+                check[nrx][nry][nbx][nby] = True
+                q.append((nrx, nry, nbx, nby, d+1))
+    print(-1)
+
+init()
+bfs()
+```
+
+
+
+선생님 코드
+
+```python
+di = [0, 1, 0, -1]
+dj = [1, 0, -1, 0]
+# n 기울인 횟수
+# c 빠져나온 구슬 정보   R 1, B 2, R+B 3
+
+def f(n, iR, jR, iB, jB, c, dir):
+    global minV
+    if c==1: # 빨간공만 빠져 나온 경우
+        if minV>n:
+            minV = n
+    elif c>1: # 파란공이 빠져 나오거나 둘 다 나온 경우
+        return
+    elif n==10: # 10번을 움직인 경우
+        return
+    else: # 각 방향으로 기울이기
+        for k in range(4):
+            p = [iR, jR, iB, jB]
+            if dir==-1 or (k!= dir and k!=(dir+2)%4): # 이전 방향이나 반대 방향이 아닌 경우
+                c, p = move(p, k) # 구슬 이동
+                if c==0 and iR==p[0] and jR==p[1] and iB==p[2] and jB==p[3]: # 구슬이 움직이지 않은 경우
+                    continue
+                else:
+                    f(n+1, p[0], p[1], p[2], p[3], c, k)
+
+def move(p, d):
+    niR, njR = p[0], p[1]
+    niB, njB = p[2], p[3]
+    cnt = 0
+    while(bd[niR+di[d]][njR+dj[d]]!='#' and bd[niR+di[d]][njR+dj[d]]!='O'):
+        niR, njR = niR+di[d], njR+dj[d]
+    if bd[niR+di[d]][njR+dj[d]]=='O':
+        cnt += 1
+    while(bd[niB+di[d]][njB+dj[d]]!='#' and bd[niB+di[d]][njB+dj[d]]!='O'):
+        niB, njB = niB+di[d], njB+dj[d]
+    if bd[niB+di[d]][njB+dj[d]]=='O':
+        cnt += 2
+
+    if cnt>0:
+
+        return cnt, p # 빠져나간 구슬 갯수 리턴
+    #구슬이 겹치면 원래 순서 유지
+
+    if niR==niB and njR==njB:
+        if d == 0: # 오른쪽인 경우, column 비교
+            t1 = njR - 1 if p[1]<p[3] else njR # B가 오른쪽이면
+            t3 = njB if p[1]<p[3] else njB-1
+            p = [niR, t1, niB, t3]
+        elif d == 1: # 아래쪽인 경우, row 비교
+            t0 = niR -1 if p[0]<p[2] else niR # B가 아래면
+            t2 = niB if p[0]<p[2] else niB -1
+            p = [t0, njR, t2, njB]
+        elif d == 2: # 왼쪽인 경우 column 비교
+            t1 = njR if p[1] < p[3] else njR + 1  # B가 오른쪽이면
+            t3 = njB+1 if p[1] < p[3] else njB
+            p = [niR, t1, niB, t3]
+        elif d == 3: # 위쪽인 경우, row 비교
+            t0 = niR if p[0]<p[2] else niR +1# B가 아래면
+            t2 = niB+1 if p[0]<p[2] else niB
+            p = [t0, njR, t2, njB]
+    else:
+        p = [niR, njR, niB, njB]
+    return cnt, p
+
+N, M = map(int, input().split())
+bd = [list(input()) for _ in range(N)]
+R = []
+B = []
+for i in range(N):
+    for j in range(M):
+        if bd[i][j]=='R':
+            R.append(i)
+            R.append(j)
+            bd[i][j] = '.'
+        if bd[i][j]=='B':
+            B.append(i)
+            B.append(j)
+            bd[i][j] == '.'
+minV = 11
+f(0, R[0], R[1], B[0], B[1], 0, -1)
+if minV == 11:
+    minV = -1
+print(minV)
+```
+
+
+
+## 백준 14502 연구소
+
+```python
+import copy
+import sys
+
+n = m = 0
+arr = []
+virusList = []
+dx = [-1, 1, 0, 0]
+dy = [0, 0, -1, 1]
+maxVal = 0
+
+def getSafeArea(copied):
+    safe = 0
+    for i in range(n):
+        for j in range(m):
+            if copied[i][j] == 0:
+                safe += 1
+    return safe
+
+def spreadVirus(x, y, copied):
+    for i in range(4):
+        nx = x + dx[i]
+        ny = y + dy[i]
+
+        if 0 <= nx and nx < n and 0 <= ny and ny < m:
+            if copied[nx][ny] == 0:
+                copied[nx][ny] = 2
+                spreadVirus(nx, ny, copied)
+
+def setWall(start, depth):
+    global maxVal
+
+    if depth == 3:
+        copied = copy.deepcopy(arr)
+
+        length = len(virusList)
+        for i in range(length):
+            [virusX, virusY] = virusList[i]
+            spreadVirus(virusX, virusY, copied)
+
+        maxVal = max(maxVal, getSafeArea(copied))
+        return
+
+    for i in range(start, n * m):
+        x = (int) (i / m)
+        y = (int) (i % m)
+
+        if arr[x][y] == 0:
+            arr[x][y] = 1
+            setWall(i + 1, depth + 1)
+            arr[x][y] = 0
+
+if __name__ == '__main__':
+    n, m = map(int, sys.stdin.readline().split())
+    for i in range(n):
+        arr.append(list(map(int, sys.stdin.readline().split())))
+
+    for i in range(n):
+        for j in range(m):
+            if arr[i][j] == 2:
+                 virusList.append([i, j])
+
+    setWall(0, 0)
+    print(maxVal)
+```
+
+슈더 코드
+
+```python
+# 3개의 기둥을 세울 칸의 번호를 정한다.
+
+for i in range(N * M - 2):  # 첫번째 기둥
+    if lab[i // M][i % M] == 0:  # 기둥을 세울 수 있으면
+        for j in range(i + 1, N * M - 1):  # 두번째 기둥
+            if lab[j // M][j % M] == 0:
+                for k in range(j + 1, N * M):  # 세번째 기둥
+                    if lab[k // M][j % M] == 0:
+                        lab[i // M][i % M] = 1  # 해당위치에 기둥을 세우고
+                        lab[j // M][j % M] = 1
+                        lab[k // M][j % M] = 1
+                        bfs(lab, N, M)
+                        lab[i // M][i % M] = 0  # 다른 위치에 기둥을 세우려면
+                        lab[j // M][j % M] = 0
+                        lab[k // M][j % M] = 0
+```
+
+
+
+
 
 
 
