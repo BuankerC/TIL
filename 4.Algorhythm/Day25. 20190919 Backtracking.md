@@ -310,19 +310,19 @@ f(i, N)
     	cnt += 1
     else:
         for j : 0 -> N - 1
+            if col[j] == 0 and right[i + j] == 0 and left[i-j+N-1] == 0
             # 다른 줄에 j번 열에 퀸이 없어야 하고
             # 왼쪽 대각선과 오른쪽 대각선에 퀸이 없어야 한다.
-            board[i][j] = 1
+            #board[i][j] = 1
             col[j] = 1  # 현재 줄에서 j열을 사용함으로서 표시
+            right[i+j] = 1
+            left[i-j+N-1]
             f(i + 1, N)  # j열에 놓을 수 있으면 다음 줄로 이동
             col[j] = 0
-            
-            
-            
-        
+            right[i+j] = 0
+            left[i-j+N-1] = 0
+            #board[i][j] = 0
 ```
-
-
 
 
 
