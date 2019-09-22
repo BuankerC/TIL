@@ -1,3 +1,7 @@
+[TOC]
+
+
+
 # 응용 4. 그래프
 
 #### 그래프는 아이템(사물 또는 추상적 개념)들과 이들 사이의 연결 관계를 표현한다.
@@ -444,27 +448,64 @@ BFS(G, v)  // 그래프 G, 탐색 시작점 v
 
 
 
+### swea 5247 [파이썬 S/W 문제해결 구현] 6일차 - 연산 D4
+
+```python
+def bfs(n, m):
+    f = r = -1
+    v = {n: 1}
+    r += 1
+    q[r] = n
+    while f != r:
+        f += 1
+        n = q[f]
+        t = [n - 10, n - 1, n + 1, n * 2]
+        for i in range(4):
+            if t[i] == m:
+                return v[n]
+            if 0 < t[i] <= min(1000000, M + 10):
+                if not v.get(t[i]):
+                    v[t[i]] = v[n] + 1
+                    r += 1
+                    q[r] = t[i]
+                    
+for tc in range(1, int(input()) + 1):
+    N, M = map(int, input().split())
+    q = [0] * 1000000
+    r = bfs(N, M)
+    print('#{} {}'.format(tc, r))
+```
 
 
 
+### swea 5248. [파이썬 S/W 문제해결 구현] 6일차 - 그룹 나누기 D3
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```python
+def dfs(n):
+    global N
+    global res
+    for i in range(N):
+        if not V[i]:
+            if g[n][i]:
+                V[i] = 1
+                dfs(i)
+                
+for tc in range(1, int(input()) + 1):
+    N, M = map(int, input().split())
+    case = list(map(int, input().split()))
+    res = 0
+    g = [[0 for _ in range()n] for _ in range(N)]
+    V = [False] * N
+    for i in range(0, len(case), 2):
+        r = case[i] - 1
+        c = case[i + 1] - 1
+        g[r][c] = 1
+        g[c][r] = 1
+        
+    for i in range(N):
+        if not V[i]:
+            res += 1
+            dfs(i)
+    print('#{} {}'.format(tc, res))
+```
 
