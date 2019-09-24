@@ -1,4 +1,9 @@
+[TOC]
+
+
+
 ## swea 5356. 의석이의 세로로 말해요 D3
+
 ```python
 for T in range(int(input())):
     L = [list(input()) for _ in range(5)]
