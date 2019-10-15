@@ -391,3 +391,114 @@ class CommentModelForm(forms.ModelForm):
 
 ```
 
+
+
+## templates folder
+
+### base.html
+
+```html
+{% load bootstrap4 %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  {% bootstrap_css %}
+</head>
+
+<body>
+  <a href="{% url 'movies:index' %}">홈</a>
+  <a href="{% url 'movies:create' %}">글쓰기</a>
+  <a href="{% url 'movies:create_model_form' %}">글쓰기(모델폼)</a>
+  <div class="container">
+    {% block body %}
+
+    {% endblock %}
+  </div>
+  {% bootstrap_javascript jquery='full' %}
+
+</body>
+
+</html>
+```
+
+
+
+### detail.html
+
+```html
+{% extends 'base.html' %}
+{% block body %}
+<h2>영화 제목: {{movie.title}}</h2>
+<h2>영어 제목: {{movie.title_en}}</h2>
+<h2>누적 관객수: {{movie.audience}}</h2>
+<h2>개봉일: {{movie.open_date}}</h2>
+<h2>장르: {{movie.genre}}</h2>
+<h2>관람등급: {{movie.watch_grade}}</h2>
+<h2>평점: {{movie.score}}</h2>
+<h2>포스터 이미지: {{movie.poster_url}}</h2>
+<h2>영화 소개: {{movie.description}}</h2>
+{% comment %}
+<a href="{% url 'movies:delete' movie.id %}">삭제</a>
+{% endcomment %}
+
+<form action="{% url 'movies:delete' movie.id %}" method="POST">
+  {% csrf_token %}
+  <input type="submit" value="삭제(POST)">
+</form>
+<a href="{% url 'movies:update' movie.id %}">수정</a>
+<a href="{% url 'movies:update_model_form' movie.id %}">수정(모델폼)</a>
+
+<hr>
+
+<form action="{% url 'movies:comment_create' movie.id %}" method="POST">
+  {% csrf_token %}
+  {{comment_form.as_p}}
+  <input type="submit">
+</form>
+
+{% for comment in movie.comment_set.all %}
+<p>{{comment.content}}</p>
+{% endfor %}
+{% endblock %}
+```
+
+
+
+### form.html
+
+```html
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{% block body %}
+{% if request.resolver_match.url_name == "create_model_form" %}
+<h1>create</h1>
+{% else %}
+<h1>update</h1>
+{% endif %}
+<form action="" method="POST">
+  {% csrf_token %}
+  {% bootstrap_form form %}
+  {% buttons submit="제출" %}{% endbuttons %}
+</form>
+{% endblock %}
+```
+
+
+
+### index.html
+
+```html
+{% extends 'base.html' %}
+{% block body %}
+<h1>index</h1>
+{% for movie in movies %}
+<a href="{% url 'movies:detail' movie.id %}">{{movie.title}}</a>
+{% endfor %}
+{% endblock %}
+```
+
